@@ -11,14 +11,11 @@ function App() {
     fetch(csvData)
         .then(response => response.text())
         .then(data => {
-            // console.log('~~~~~~~~~~~~~~~~', data)
             parseCsv(data);
         });
 
     function parseCsv(csv) {
         const data = Papa.parse(csv).data;
-        // console.log('CSV parsed:', data);
-
         let columnData = []
         for (let i = 0; i < data.length; i++) {
             for (let j = 0; j < data[i].length; j++) {
@@ -29,14 +26,12 @@ function App() {
                     })
                     continue
                 }
-                // todo include name
                 columnData[j].data.push({
                     name: data[i][0],
                     raw: data[i][j]
                 })
             }
         }
-        // console.log('~~~~~~~~~~~~', columnData)
         for (let i = 1; i < columnData.length; i++ ) {
             const response = process(columnData[i].data)
             console.log(`processed ***${columnData[i].header}***`, response)
@@ -81,6 +76,7 @@ function App() {
                 response.push(...duplicates[score].data)
                 continue
             }
+            //if even offset half the height around middle. If odd, one will be on "true" value
             let offset = count % 2 === 0 ? CELL_HEIGHT / 2 : 0;
             for (let i = 0; i < duplicates[score].data.length; i++) {
                 let add = offset + (i - Math.floor(count/2)) * CELL_HEIGHT;
