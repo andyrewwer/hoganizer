@@ -7,6 +7,7 @@ function App() {
     const WINDOW_HEIGHT = 1080
     const HEADER_HEIGHT = 60
     const CELL_HEIGHT = 32
+    const MINIMUM_GAP = 2
 
     fetch(csvData)
         .then(response => response.text())
@@ -44,10 +45,12 @@ function App() {
             output.push({
                 name: column[i].name,
                 raw: column[i].raw,
+                initial_score: calculateScore(column[i].raw),
                 score: calculateScore(column[i].raw)
             })
         }
         output = processDuplicates(output)
+        output = output.sort((a,b) => a.score > b.score ? 1 : -1)
         output = processTooClose(output)
         // 3 - they aren't close enough across columns [STRETCH GOAL]
         return output;
@@ -90,9 +93,41 @@ function App() {
         return response
     }
 
-    function processTooClose(output) {
-        //todo
-        return output;
+    function processTooClose(column) {
+        let modified = false;
+
+        for (let i = 0; i < column.length - 1; i++) {
+            let score = column[i].score
+            let nextScore = column[i + 1].score
+            const diff = nextScore - score;
+            if (diff < CELL_HEIGHT + MINIMUM_GAP) {
+                const newValue = nextScore - CELL_HEIGHT - MINIMUM_GAP;
+
+                // instead of pushing down, push up
+                if (newValue < HEADER_HEIGHT) {
+                    column[i + 1] = {
+                        ...column[i+1],
+                        score: score + CELL_HEIGHT + MINIMUM_GAP
+                    }
+                    modified = true;
+                } else {
+                    // Otherwise, update the value
+                    column[i] = {
+                        ...column[i],
+                        score: newValue
+                    };
+                    modified = true;
+                }
+            }
+        }
+
+        if (modified) {
+            // Recursively call the function to adjust the numbers again
+            return processTooClose(column);
+        } else {
+            // Return the adjusted numbers if no changes were made
+            return column;
+        }
     }
 
     function calculateScore(val, add = 0) {
@@ -102,7 +137,7 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <h1>look at the logs! </h1>
+                <h1>look at the console! (F12 on most browsers) </h1>
             </header>
         </div>
     );
