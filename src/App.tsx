@@ -1,6 +1,9 @@
 import './App.css';
 import Papa from 'papaparse';
-import csvData from "./assets/input-data-002.csv";
+//@ts-ignore
+// import csvData from "./assets/input-data-personality-001.csv";
+// import csvData from "./assets/input-data-development-001.csv";
+import csvData from "./assets/input-data-motives-001.csv";
 import {useEffect, useState} from "react";
 
 type Column = {
@@ -25,11 +28,11 @@ function App() {
     const HEADER_ROW_WIDTH = 80
 
     useEffect(() => {
-    fetch(csvData)
-        .then(response => response.text())
-        .then(data => {
-            parseCsv(data);
-        });
+        fetch(csvData)
+            .then(response => response.text())
+            .then(data => {
+                parseCsv(data);
+            });
     }, [])
 
     function parseCsv(csv) {
@@ -56,10 +59,8 @@ function App() {
         }
         let _columns = []
 
-        console.log(columnData)
         for (let i = 0; i < columnData.length; i++) {
             const response = process(columnData[i].data)
-            console.log(`processed ***${_header[i]}***`, response)
             _columns.push({
                 data: response
             })
@@ -73,7 +74,7 @@ function App() {
         column = processDuplicates(column)
         column = column.sort((a, b) => a.top > b.top ? 1 : -1)
         column = processTooClose(column)
-        // 3 - they aren't close enough across columns [STRETCH GOAL]
+        // todo 3 - they aren't close enough across columns [STRETCH GOAL]
         return column;
     }
 
@@ -115,46 +116,38 @@ function App() {
 
     function processTooClose(column: Cell[]): Cell[] {
         let modified = false;
-
         for (let i = 0; i < column.length - 1; i++) {
             let minimum_gap = column[i].hogan_score === column[i + 1].hogan_score ? 0 : MINIMUM_GAP;
+            const PUSH_AMOUNT = CELL_HEIGHT + minimum_gap
             let top = column[i].top
             let nextTop = column[i + 1].top
             const diff = nextTop - top;
-            if (diff < CELL_HEIGHT + minimum_gap) {
-                const newValue = nextTop - CELL_HEIGHT - minimum_gap;
+            if (diff < CELL_HEIGHT + minimum_gap || top > nextTop) {
+                // assumes all pushing down. Lets think about up and down later
+                const newNextTop = top + PUSH_AMOUNT
 
-                // instead of pushing down, push up
-                if (newValue < HEADER_HEIGHT) {
-                    column[i + 1] = {
-                        ...column[i + 1], top: top + CELL_HEIGHT + minimum_gap
-                    }
-                    modified = true;
-                } else {
-                    // Otherwise, update the value
-                    column[i] = {
-                        ...column[i], top: newValue
-                    };
-                    modified = true;
+                column[i + 1] = {
+                    ...column[i + 1],
+                    top: newNextTop
                 }
+                modified = true;
             }
         }
+        return column;
+    }
 
-        if (modified) {
-            // Recursively call the function to adjust the numbers again
-            return processTooClose(column);
-        } else {
-            // Return the adjusted numbers if no changes were made
-            return column;
-        }
+    function getColumnWidth() {
+        console.log(Math.floor((1920 - HEADER_ROW_WIDTH) / columns.length))
+        return Math.floor((1920 - HEADER_ROW_WIDTH) / columns.length);
     }
 
     function calculateDistanceFromTop(val, add = 0) {
         return Math.floor((100 - val) * 9.8 + HEADER_HEIGHT + add);
     }
 
-    function getColumnWidth(columns) {
-        return (1920 - HEADER_ROW_WIDTH) / columns.length
+    function calcLeft(index: number) {
+        let columnWidth = getColumnWidth();
+        return HEADER_ROW_WIDTH + Math.floor((columnWidth - 150) / 2) + columnWidth * index
     }
 
     return (
@@ -163,7 +156,12 @@ function App() {
                 <thead style={{height: HEADER_HEIGHT + 10}}>
                 <tr>
                     <th style={{width: `${HEADER_ROW_WIDTH}px`}}></th>
-                    {header.map(val => <th key={val}>{val}</th>)}
+                    {header.map(val =>
+                        <th key={val} style={{
+                            width: `${getColumnWidth()}px`,
+                            maxWidth: `${getColumnWidth()}px`
+                        }}>{val}</th>
+                    )}
                 </tr>
                 </thead>
                 <tbody>
@@ -184,7 +182,7 @@ function App() {
             {columns.map((col, index) => col.data.map(cell => <div className="cell" key={cell.name}
                                                                    style={{
                                                                        top: cell.top,
-                                                                       left: `${HEADER_ROW_WIDTH + Math.floor(getColumnWidth(columns) * (index + 0.5))}px`,
+                                                                       left: `${calcLeft(index)}px`,
                                                                        height: CELL_HEIGHT,
                                                                        background: index % 2 === 0 ? '#164E86' : '#BADA55',
                                                                        color: '#FFF'
