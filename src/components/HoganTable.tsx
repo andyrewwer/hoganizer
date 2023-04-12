@@ -1,6 +1,6 @@
 import {CELL_HEIGHT, HEADER_HEIGHT, HEADER_ROW_WIDTH} from "./utils";
 
-export const HoganTable = ({headers, columns}) => {
+export const HoganTable = ({headers, columns, assessmentType}) => {
 
     function getColumnWidth() {
         return Math.floor((1920 - HEADER_ROW_WIDTH) / columns.length);
@@ -14,7 +14,11 @@ export const HoganTable = ({headers, columns}) => {
     return (
         <>
             <table className="container" cellSpacing="0">
-                <thead style={{height: HEADER_HEIGHT + 10}}>
+                <thead style={{
+                    height: HEADER_HEIGHT + 10,
+                    background: assessmentType.background,
+                    color: assessmentType.color
+                }}>
                 <tr>
                     <th style={{width: `${HEADER_ROW_WIDTH}px`}}></th>
                     {headers.map(val =>
