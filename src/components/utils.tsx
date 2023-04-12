@@ -5,12 +5,66 @@ export const CELL_HEIGHT = 32
 export const MINIMUM_GAP = 5
 export const HEADER_ROW_WIDTH = 80
 
+type HEX = `#${string}`;
+
+export type Color = {
+    background: HEX,
+    text: HEX
+}
+
+export const colors: Color[] = [
+    {
+        text: '#FFFFFF',
+        background: '#000000'
+    }, {
+        text: '#FFFFFF',
+        background: '#22528E'
+    },
+    {
+        text: '#000000',
+        background: '#FEFC8B'
+    },
+    {
+        text: '#FFFFFF',
+        background: '#5E8E28'
+    },
+    {
+        text: '#FFFFFF',
+        background: '#EA4025'
+    },
+    {
+        text: '#FFFFFF',
+        background: '#4C1F8D'
+    },
+    {
+        text: '#FFFFFF',
+        background: '#F09A38'
+    },
+    {
+        text: '#FFFFFF',
+        background: '#882450'
+    },
+    {
+        text: '#FFFFFF',
+        background: '#8B551B'
+    },
+    {
+        text: '#FFFFFF',
+        background: '#4294F7'
+    },
+    {
+        text: '#99195E',
+        background: '#D5D5D5'
+    },
+]
+
 export type Column = {
     data: Cell[]
 }
 
 export type Cell = {
     name: string,
+    color: Color,
     hogan_score: number,
     calculated_score: number,
     top: number
@@ -32,6 +86,7 @@ export function parseCsv(csv) {
             }
             columnData[j - 1].data.push({
                 name: data[i][0],
+                color: colors[(i-1) % colors.length],
                 hogan_score: data[i][j],
                 calculated_score: calculateDistanceFromTop(data[i][j]),
                 top: calculateDistanceFromTop(data[i][j]),

@@ -3,7 +3,6 @@ import {CELL_HEIGHT, HEADER_HEIGHT, HEADER_ROW_WIDTH} from "./utils";
 export const HoganTable = ({headers, columns}) => {
 
     function getColumnWidth() {
-        console.log(Math.floor((1920 - HEADER_ROW_WIDTH) / columns.length))
         return Math.floor((1920 - HEADER_ROW_WIDTH) / columns.length);
     }
 
@@ -41,15 +40,15 @@ export const HoganTable = ({headers, columns}) => {
                 </tr>
                 </tbody>
             </table>
-            {columns.map((col, index) => col.data.map(cell => <div className="cell" key={cell.name}
+            {columns.map((col, index) => col.data.map(cell => {console.log(cell); return (<div className="cell" key={cell.name}
                                                                    style={{
                                                                        top: cell.top,
                                                                        left: `${calcLeft(index)}px`,
                                                                        height: CELL_HEIGHT,
-                                                                       background: index % 2 === 0 ? '#164E86' : '#BADA55',
-                                                                       color: '#FFF'
+                                                                       background: cell.color.background,
+                                                                       color:cell.color.text
                                                                    }}>
                 {cell.name.split(' ')[0]} {cell.hogan_score}
-            </div>))}
+            </div>)}))}
         </>);
 }
