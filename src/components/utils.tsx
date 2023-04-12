@@ -75,12 +75,12 @@ export function parseCsv(csv) {
     let columnData: Column[] = []
     let _headers = []
     for (let i = 0; i < data.length; i++) {
+        //ignore name column
         for (let j = 1; j < data[i].length; j++) {
             if (i === 0) {
                 columnData.push({
                     data: []
                 })
-                //ignore name column
                 _headers.push(data[i][j])
                 continue
             }
@@ -172,5 +172,5 @@ function processTooClose(column: Cell[]): Cell[] {
 }
 
 export function calculateDistanceFromTop(val, add = 0) {
-    return Math.floor((100 - val) * 9.8 + HEADER_HEIGHT + add);
+    return Math.floor((100 - val) * 9.95 + HEADER_HEIGHT + add);
 }

@@ -45,10 +45,6 @@ function App() {
             });
     }, [])
 
-
-
-
-
     return (
         <HoganTable headers={headers} columns={columns} assessmentType={assessmentType}/>);
 }
