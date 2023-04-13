@@ -1,52 +1,36 @@
 import './App.css';
 //@ts-ignore
-// import csvData from "./assets/input-data-personality-001.csv";
-import csvData from "./assets/input-data-development-001.csv";
-// import csvData from "./assets/input-data-motives-001.csv";
+import personalityCsvData from "./assets/input-data-personality-001.csv";
+//@ts-ignore
+import developmentCsvData from "./assets/input-data-development-001.csv";
+//@ts-ignore
+import motivesCsvData from "./assets/input-data-motives-001.csv";
 import {useEffect, useState} from "react";
 import {HoganTable} from "./components/HoganTable";
-import {Column, parseCsv} from "./components/utils";
-
-const assessmentTypes = [
-    {
-        name: 'motives',
-        header: 'Recognition',
-        background: '#607EA8',
-        color: '#FFF'
-    },
-    {
-        name: 'development',
-        header: 'Excitable',
-        background: '#C14144',
-        color: '#FFF'
-    },
-    {
-        name: 'personality',
-        header: 'Adjustment',
-        background: '#EAB555',
-        color: '#000'
-    },
-]
+import {AssessmentResult, parseCsv} from "./components/ParseService";
 
 function App() {
 
-    const [headers, setHeaders] = useState<string[]>([])
-    const [columns, setColumns] = useState<Column[]>([])
-    const [assessmentType, setAssessmentType] = useState(assessmentTypes[0])
+    const [assessments, setAssessments] = useState<AssessmentResult[]>([])
 
     useEffect(() => {
-        fetch(csvData)
+        fetch(developmentCsvData)
             .then(response => response.text())
             .then(data => {
-                const parsedData = parseCsv(data);
-                setHeaders(parsedData.headers)
-                setColumns(parsedData.columns)
-                setAssessmentType(assessmentTypes.filter(type => type.header === parsedData.headers[0])[0] || assessmentTypes[0]);
-            });
+                const parsedData = parseCsv(data)
+                setAssessments([parsedData])
+                // setAssessments(_assessments => {
+                //     _assessments.splice(0,0, parsedData);
+                //     console.log('_assessments', _assessments)
+                //     return _assessments;
+                // })
+                // todo multiple assessments
+            })
     }, [])
 
-    return (
-        <HoganTable headers={headers} columns={columns} assessmentType={assessmentType}/>);
+    return (<>
+        <HoganTable headers={assessments[0]?.headers} columns={assessments[0]?.columns} type={assessments[0]?.type}/>
+    </>);
 }
 
 export default App;

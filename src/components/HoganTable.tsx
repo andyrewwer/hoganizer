@@ -1,6 +1,7 @@
 import {CELL_HEIGHT, HEADER_HEIGHT, HEADER_ROW_WIDTH} from "./utils";
+import {AssessmentResult} from "./ParseService";
 
-export const HoganTable = ({headers, columns, assessmentType}) => {
+export const HoganTable = ({headers, columns, type}: AssessmentResult) => {
 
     function getColumnWidth() {
         return Math.floor((1920 - HEADER_ROW_WIDTH) / columns.length);
@@ -11,13 +12,17 @@ export const HoganTable = ({headers, columns, assessmentType}) => {
         return HEADER_ROW_WIDTH + Math.floor((columnWidth - 150) / 2) + columnWidth * index
     }
 
+    if (!headers || !columns || !type) {
+        console.warn('headers,columns, or types are null', headers, columns, type)
+        return <></>
+    }
     return (
         <>
             <table className="container" cellSpacing="0">
                 <thead style={{
                     height: HEADER_HEIGHT + 10,
-                    background: assessmentType.background,
-                    color: assessmentType.color
+                    background: type.color.background,
+                    color: type.color.text
                 }}>
                 <tr>
                     <th style={{width: `${HEADER_ROW_WIDTH}px`}}></th>
