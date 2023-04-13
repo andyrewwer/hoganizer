@@ -59,7 +59,6 @@ export function parseCsv(csv): AssessmentResult {
     let columnData: Column[] = []
     let _headers = []
     let type: AssessmentType = assessmentTypes[0];
-    console.log('start type', type)
 
     for (let i = 0; i < data.length; i++) {
         //ignore name column
@@ -69,7 +68,6 @@ export function parseCsv(csv): AssessmentResult {
                     data: []
                 })
                 if (j === 1) {
-                    console.log('mid type', type)
                     type = assessmentTypes.filter(type => type.header === data[i][j])[0] || assessmentTypes[0]
                 }
                 _headers.push(data[i][j])
@@ -93,7 +91,6 @@ export function parseCsv(csv): AssessmentResult {
         })
     }
     console.log('columns', _columns)
-    console.log('type', type)
     return {
         columns: _columns,
         headers: _headers,

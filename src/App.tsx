@@ -12,24 +12,65 @@ import {AssessmentResult, parseCsv} from "./components/ParseService";
 function App() {
 
     const [assessments, setAssessments] = useState<AssessmentResult[]>([])
+    const [leftPressed, setLeftPressed] = useState(false)
+    const [rightPressed, setRightPressed] = useState(false)
+    const [active, setActive] = useState(0)
+
+    useEffect(() => {
+        const _handleKeyDown = (e) => {
+            if (e.keyCode === 37) {
+                setLeftPressed(true)
+                return
+            } if (e.keyCode === 39) {
+                setRightPressed(true)
+            }
+        }
+        document.addEventListener("keydown", _handleKeyDown);
+        return () => document.removeEventListener("keydown", _handleKeyDown)
+    },[]);
+
+    useEffect(() => {
+        if (leftPressed === true ) {
+            setActive(_active => _active === 0 ? assessments.length - 1 : _active - 1)
+            setLeftPressed(false)
+        }
+    }, [leftPressed])
+
+    useEffect(() => {
+        if (rightPressed === true ) {
+            setActive(_active => _active + 1 >= assessments.length ? 0 : _active + 1)
+            setRightPressed(false)
+        }
+    }, [rightPressed])
 
     useEffect(() => {
         fetch(developmentCsvData)
             .then(response => response.text())
             .then(data => {
                 const parsedData = parseCsv(data)
-                setAssessments([parsedData])
-                // setAssessments(_assessments => {
-                //     _assessments.splice(0,0, parsedData);
-                //     console.log('_assessments', _assessments)
-                //     return _assessments;
-                // })
-                // todo multiple assessments
+                setAssessments(_a => [..._a, parsedData])
             })
+        fetch(personalityCsvData)
+            .then(response => response.text())
+            .then(data => {
+                const parsedData = parseCsv(data)
+                setAssessments(_a => [..._a, parsedData])
+            })
+        fetch(motivesCsvData)
+            .then(response => response.text())
+            .then(data => {
+                const parsedData = parseCsv(data)
+                setAssessments(_a => [..._a, parsedData])
+            })
+        //    todo why is this coming up 4/7 in strict mode?
     }, [])
 
+    console.log('assessments', assessments)
     return (<>
-        <HoganTable headers={assessments[0]?.headers} columns={assessments[0]?.columns} type={assessments[0]?.type}/>
+        {assessments.length > 0 &&
+            <HoganTable headers={assessments[active]?.headers} columns={assessments[active]?.columns}
+                        type={assessments[active]?.type}/>
+        }
     </>);
 }
 
