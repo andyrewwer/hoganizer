@@ -13,9 +13,15 @@ export type Cell = {
     top: number
 }
 
+type Label = {
+    label: string,
+    height: number
+}
+
 export type AssessmentType = {
     name: string,
     header: string,
+    labels: Label[],
     color: Color
 }
 
@@ -23,6 +29,16 @@ export const assessmentTypes: AssessmentType[] = [
     {
         name: 'motives',
         header: 'Recognition',
+        labels: [{
+            label: "HIGH",
+            height: 35
+        }, {
+            label: "AVE",
+            height: 30
+        }, {
+            label: "LOW",
+            height: 35
+        }],
         color: {
             background: '#607EA8',
             text: '#FFF'
@@ -31,6 +47,19 @@ export const assessmentTypes: AssessmentType[] = [
     {
         name: 'development',
         header: 'Excitable',
+        labels: [{
+            label: "HIGH RISK",
+            height: 10
+        }, {
+            label: "MOD RISK",
+            height: 20
+        }, {
+            label: "LOW RISK",
+            height: 30
+        }, {
+            label: "NO RISK",
+            height: 40
+        }],
         color: {
             background: '#C14144',
             text: '#FFF'
@@ -40,7 +69,16 @@ export const assessmentTypes: AssessmentType[] = [
     {
         name: 'personality',
         header: 'Adjustment',
-        color: {
+        labels: [{
+            label: "HIGH",
+            height: 35
+        }, {
+            label: "AVE",
+            height: 30
+        }, {
+            label: "LOW",
+            height: 35
+        }],        color: {
             background: '#EAB555',
             text: '#000'
 

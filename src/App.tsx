@@ -18,11 +18,12 @@ function App() {
 
     useEffect(() => {
         const _handleKeyDown = (e) => {
-            if (e.keyCode === 37) {
+            if (e.keyCode === 37 && !leftPressed) {
                 setLeftPressed(true)
                 return
-            } if (e.keyCode === 39) {
+            } if (e.keyCode === 39 && !rightPressed) {
                 setRightPressed(true)
+                return
             }
         }
         document.addEventListener("keydown", _handleKeyDown);

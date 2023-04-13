@@ -35,18 +35,11 @@ export const HoganTable = ({headers, columns, type}: AssessmentResult) => {
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td> HIGH</td>
-                    {headers.map(val => <td key={val}></td>)}
-                </tr>
-                <tr>
-                    <td> AVE</td>
-                    {headers.map(val => <td key={val}></td>)}
-                </tr>
-                <tr>
-                    <td> LOW</td>
-                    {headers.map(val => <td key={val}></td>)}
-                </tr>
+                {type?.labels.map(label => <tr key={label.label} style={{height: `${label.height}%`}}>
+                        <td> {label.label}</td>
+                        {headers.map(val => <td key={val}></td>)}
+                    </tr>
+                )}
                 </tbody>
             </table>
             {columns.map((col, index) => col.data.map(cell => (<div className="cell" key={cell.name}
