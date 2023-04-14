@@ -26,6 +26,7 @@ export const HoganTable = ({headers, columns, type}: AssessmentResult) => {
                 }}>
                 <tr>
                     <th style={{width: `${HEADER_ROW_WIDTH}px`}}></th>
+
                     {headers.map(val =>
                         <th key={val} style={{
                             width: `${getColumnWidth()}px`,

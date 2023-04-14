@@ -1,4 +1,3 @@
-import './App.css';
 //@ts-ignore
 import personalityCsvData from "./assets/input-data-personality-001.csv";
 //@ts-ignore
@@ -11,11 +10,18 @@ import {AssessmentResult, parseCsv} from "./components/ParseService";
 
 function App() {
 
+    //react useState, do not set value director. Use setter. Only changes to these values cause a re-render otherwise values can change but UI remains the same
+    // all the page to be iterated left/right
     const [assessments, setAssessments] = useState<AssessmentResult[]>([])
+    //is left pressed? If so change slide. required due to funky behavior in react
     const [leftPressed, setLeftPressed] = useState(false)
+    //is react pressed? If so change it. required due to funky behavior in react
     const [rightPressed, setRightPressed] = useState(false)
+    //which assessment is active
     const [active, setActive] = useState(0)
 
+    //use Effect is like componentDidLoad but changes whenever the "dependencies" change. In this case deps is, [], so only on load.
+    //return function is componentDidUnload
     useEffect(() => {
         const _handleKeyDown = (e) => {
             if (e.keyCode === 37 && !leftPressed) {
@@ -31,6 +37,7 @@ function App() {
         return () => document.removeEventListener("keydown", _handleKeyDown)
     }, []);
 
+    //this one is called whenever leftPressed Changes and updates "active"
     useEffect(() => {
         if (leftPressed === true) {
             setActive(_active => _active === 0 ? assessments.length - 1 : _active - 1)
@@ -38,6 +45,7 @@ function App() {
         }
     }, [leftPressed])
 
+    //ditto for right
     useEffect(() => {
         if (rightPressed === true) {
             setActive(_active => _active + 1 >= assessments.length ? 0 : _active + 1)
@@ -70,6 +78,7 @@ function App() {
         return [parsedData, ...individualAssessments]
     }
 
+    //load data when components load
     useEffect(() => {
             fetch(developmentCsvData)
                 .then(response => response.text())
@@ -88,6 +97,8 @@ function App() {
                 })
             //    todo why is this coming up 4/7 in strict mode?
         }, [])
+    //this is the UI, the empty <> is just empty fragment, making React happy
+    //load the relevant assessment into HoganTable component (components/HoganTable.tsx)
     return (<>
         {assessments.length > 0 &&
             <HoganTable headers={assessments[active]?.headers} columns={assessments[active]?.columns}

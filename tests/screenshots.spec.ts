@@ -9,7 +9,7 @@ test('app loads successfully', async ({ page }) => {
 let numberOfParticipants = 11;
 test('scroll between different ones', async ({ page }) => {
   await page.goto('/');
-  // await page.evaluate("document.body.style.zoom=0.75")
+  await page.evaluate("document.body.style.zoom=0.6")
   await page.locator(".container").press("ArrowLeft", {delay: 500});
 
 
