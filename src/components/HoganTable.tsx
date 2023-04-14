@@ -42,7 +42,7 @@ export const HoganTable = ({headers, columns, type}: AssessmentResult) => {
                 )}
                 </tbody>
             </table>
-            {columns.map((col, index) => col.data.map(cell => (<div className="cell" key={cell.name}
+            {columns.map((col, index) => col.data.map(cell => <div className="cell" key={cell.name}
                                                                    style={{
                                                                        top: cell.top,
                                                                        left: `${calcLeft(index)}px`,
@@ -51,6 +51,6 @@ export const HoganTable = ({headers, columns, type}: AssessmentResult) => {
                                                                        color:cell.color.text
                                                                    }}>
                 {cell.name.split(' ')[0]} {cell.hogan_score}
-            </div>)))}
+            </div>))}
         </>);
 }
